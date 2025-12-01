@@ -5,8 +5,9 @@ dependencies:
   - python=3.9
   - requests
   - beautifulsoup4
-  - xhtml2pdf
+  - weasyprint
   - markdownify
   - tqdm
+  - xhtml2pdf
   - markdown
   - validators

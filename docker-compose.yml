@@ -1,11 +1,9 @@
 name: webbinder
 services:
   webbinder:
-    build:
-      context: .
+    build: .
     environment:
       - UID=${UID:-1000}
       - GID=${GID:-1000}
     volumes:
       - ./output:/app/output
-

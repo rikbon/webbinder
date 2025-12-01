@@ -122,6 +122,8 @@ class WebBinder:
             with open(md_path, 'r', encoding='utf-8') as f:
                 md_content = f.read()
             
+            # Use xhtml2pdf to convert HTML (from markdown) to PDF
+            from xhtml2pdf import pisa
             html_content = markdown.markdown(md_content)
 
             output_path = os.path.join(output_dir, output_filename)
@@ -156,7 +158,7 @@ class WebBinder:
         self.url_cache[self.start_url] = main_content_response # Cache main content
         
         # Now, get the links from the content we already fetched
-        # The get_links_from_html function will recursively populate processed_urls
+        # The _get_links_from_html function will recursively populate processed_urls
         self._get_links_from_html(main_content_response, self.start_url, self.depth)
         
         # Filter out the start_url from all_links_to_process, as it's handled separately
@@ -196,19 +198,23 @@ class WebBinder:
                 batch_contents_list = [main_content_response.decode('utf-8')]
                 links_processed_in_batch = 0
                 for link in tqdm(batch_links, desc="Processing links", leave=False):
-                    # The 'if link not in processed_urls' check is already handled by `get_links_from_html` filling the global `processed_urls`
-                    # so we can directly access from url_cache, or fetch if not in cache (shouldn't happen much with max_urls check)
-                    if link in self.url_cache:
-                        link_content = self.url_cache[link]
-                    else:
-                        time.sleep(self.rate_limit)
-                        link_content = self._get_content(link)
-                        self.url_cache[link] = link_content
-                    
-                    if link_content:
-                        batch_contents_list.append(f'<hr><h1>{link}</h1>')
-                        batch_contents_list.append(link_content.decode('utf-8'))
-                        links_processed_in_batch += 1
+                    if len(self.processed_urls) >= self.max_urls: # Check against instance processed_urls
+                        if self.debug_mode:
+                            print(f"URL limit of {self.max_urls} reached. Stopping.")
+                        break
+                    if link not in self.processed_urls: # Check against instance processed_urls
+                        if link in self.url_cache:
+                            link_content = self.url_cache[link]
+                        else:
+                            time.sleep(self.rate_limit)
+                            link_content = self._get_content(link)
+                            self.url_cache[link] = link_content
+                        
+                        if link_content:
+                            batch_contents_list.append(f'<hr><h1>{link}</h1>')
+                            batch_contents_list.append(link_content.decode('utf-8'))
+                            links_processed_in_batch += 1
+                        self.processed_urls.add(link) # Add to instance processed_urls
                 
                 batch_content_final = "".join(batch_contents_list)
                 self._save_as_markdown(batch_content_final.encode('utf-8'), md_filename, 'output')
