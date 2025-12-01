@@ -1,0 +1,12 @@
+name: webbinder
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - requests
+  - beautifulsoup4
+  - xhtml2pdf
+  - markdownify
+  - tqdm
+  - markdown
+  - validators
