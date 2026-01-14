@@ -11,7 +11,9 @@ COPY environment.yml .
 RUN conda env create -f environment.yml
 
 # Copy the content of the local src directory to the working directory
+# Copy the content of the local src directory to the working directory
 COPY main.py .
+COPY webbinder webbinder/
 
 # Activate the Conda environment and specify the command to run on container start
 ENTRYPOINT ["conda", "run", "-n", "webbinder", "python", "main.py"]

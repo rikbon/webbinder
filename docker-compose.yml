@@ -2,8 +2,10 @@ name: webbinder
 services:
   webbinder:
     build: .
+    network_mode: "host"
     environment:
       - UID=${UID:-1000}
       - GID=${GID:-1000}
     volumes:
       - ./output:/app/output
+      - .:/app

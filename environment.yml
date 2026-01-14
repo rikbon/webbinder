@@ -3,7 +3,8 @@ channels:
   - conda-forge
 dependencies:
   - python=3.9
-  - requests
+  - aiohttp
+  - aiofiles
   - beautifulsoup4
   - weasyprint
   - markdownify
@@ -11,3 +12,5 @@ dependencies:
   - xhtml2pdf
   - markdown
   - validators
+  - pytest
+  - pytest-asyncio
