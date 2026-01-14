@@ -31,7 +31,7 @@ WebBinder is a command-line utility, containerized with Docker and using a Conda
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repository-url>
+    git clone https://github.com/rikbon/webbinder
     cd webbinder
     ```
 
